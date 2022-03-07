@@ -25,7 +25,7 @@ var infoImg *ebiten.Image
 
 func init() {
 	var err error
-	penImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/pen.png")
+	penImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Pen.png")
 	if err != nil {
 		log.Fatal(err)
 	}
