@@ -1,7 +1,6 @@
 package mediator
 
 import (
-	"fmt"
 	"image/color"
 	"spritely/internal/shared/request"
 	"spritely/internal/shared/topic"
@@ -18,11 +17,10 @@ var currentSprite = geom.Coordinate{
 } // local coordinate on the spritesheet
 
 func (m *Mediator) Message(msg actor.Message) {
-	if m.idempotencyManager.AlreadyProcessed(
-		fmt.Sprintf("%v%v%v%v", msg, currentColor, currentTool, currentSprite),
-	) {
+	if msg.Hash() == m.lastMsg {
 		return
 	}
+	m.lastMsg = msg.Hash()
 	switch msg.Topic {
 	case topic.SET_CURRENT_COLOR:
 		currentColor = msg.Payload.(color.Color)

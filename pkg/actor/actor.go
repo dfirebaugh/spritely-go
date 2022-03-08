@@ -1,6 +1,9 @@
 package actor
 
 import (
+	"crypto/sha256"
+	"fmt"
+
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
@@ -23,6 +26,15 @@ type Message struct {
 	Requestor Address
 	Topic     Topic
 	Payload   interface{}
+}
+
+func (m Message) Hash() string {
+	h := sha256.New()
+	h.Write([]byte(m.String()))
+	return fmt.Sprintf("%x", h.Sum(nil))
+}
+func (m Message) String() string {
+	return fmt.Sprintf("%#v", m)
 }
 
 type messageStub struct{}

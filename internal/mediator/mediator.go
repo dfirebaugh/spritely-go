@@ -9,21 +9,20 @@ import (
 	"spritely/internal/toolbar"
 	"spritely/pkg/actor"
 	"spritely/pkg/geom"
-	"spritely/pkg/idempotency"
 	"spritely/pkg/widget"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Mediator struct {
-	actorSystem        *actor.ActorSystem
-	address            actor.Address
-	canvas             actor.Address
-	inputController    actor.Address
-	colorPicker        actor.Address
-	toolBar            actor.Address
-	spriteSheet        actor.Address
-	idempotencyManager idempotency.IdempotencyManager
+	actorSystem     *actor.ActorSystem
+	address         actor.Address
+	canvas          actor.Address
+	inputController actor.Address
+	colorPicker     actor.Address
+	toolBar         actor.Address
+	spriteSheet     actor.Address
+	lastMsg         string
 }
 
 const (

@@ -1,0 +1,37 @@
+name: Build and deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.17'
+    - name: Verify go installation
+    - run: go version
+
+    - name: Install build requirements
+      run: sudo apt-get install libsdl2-ttf-dev libsdl2-image-dev
+
+    - name: Build the project
+      run: make web && make wasm
+
+    # Publish the website
+    - name: GitHub Pages action
+      if: ${{ github.ref == 'refs/heads/main' }} # Publish only when the push is on main
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: .dist
+        allow_empty_commit: false
+        keep_files: false
+        exclude_assets: '.gitignore'
+        force_orphan: true
