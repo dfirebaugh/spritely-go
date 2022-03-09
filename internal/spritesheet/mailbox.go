@@ -25,8 +25,28 @@ func (ss *SpriteSheet) mailbox() {
 				Topic:   topic.PUSH_TO_CLIPBOARD,
 				Payload: ss.sprites[ss.selected.Y][ss.selected.X].Widget.Elements,
 			})
-		case topic.PASTE:
+		case topic.UPDATE_CANVAS:
 			ss.sprites[ss.selected.Y][ss.selected.X].Widget.SetElements(m.GetPayload().([][]*widget.Element))
+		case topic.LEFT:
+			ss.selectFromLocal(geom.Coordinate{
+				X: ss.selected.X - 1,
+				Y: ss.selected.Y,
+			})
+		case topic.RIGHT:
+			ss.selectFromLocal(geom.Coordinate{
+				X: ss.selected.X + 1,
+				Y: ss.selected.Y,
+			})
+		case topic.UP:
+			ss.selectFromLocal(geom.Coordinate{
+				X: ss.selected.X,
+				Y: ss.selected.Y - 1,
+			})
+		case topic.DOWN:
+			ss.selectFromLocal(geom.Coordinate{
+				X: ss.selected.X,
+				Y: ss.selected.Y + 1,
+			})
 		}
 	}
 }

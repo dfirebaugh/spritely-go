@@ -33,6 +33,7 @@ func (i Controller) Update() {
 			Topic:   topic.LEFT_CLICK,
 			Payload: coordinate,
 		})
+		return
 	}
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 		x, y := ebiten.CursorPosition()
@@ -44,36 +45,68 @@ func (i Controller) Update() {
 			Topic:   topic.RIGHT_CLICK,
 			Payload: coordinate,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyS) {
 		i.broker.Publish(message.Message{
 			Topic: topic.SAVE,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyC) {
 		i.broker.Publish(message.Message{
 			Topic: topic.COPY,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
 		i.broker.Publish(message.Message{
-			Topic:   topic.PASTE,
+			Topic:   topic.UPDATE_CANVAS,
 			Payload: i.clipboard.Pixels,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyZ) {
 		i.broker.Publish(message.Message{
 			Topic: topic.UNDO,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyY) {
 		i.broker.Publish(message.Message{
 			Topic: topic.REDO,
 		})
+		return
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyZ) {
 		i.broker.Publish(message.Message{
 			Topic: topic.REDO,
 		})
+		return
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) || inpututil.IsKeyJustPressed(ebiten.KeyA) {
+		i.broker.Publish(message.Message{
+			Topic: topic.LEFT,
+		})
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyRight) || inpututil.IsKeyJustPressed(ebiten.KeyD) {
+		i.broker.Publish(message.Message{
+			Topic: topic.RIGHT,
+		})
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyUp) || inpututil.IsKeyJustPressed(ebiten.KeyW) {
+		i.broker.Publish(message.Message{
+			Topic: topic.UP,
+		})
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyDown) || inpututil.IsKeyJustPressed(ebiten.KeyS) {
+		i.broker.Publish(message.Message{
+			Topic: topic.DOWN,
+		})
+		return
 	}
 }

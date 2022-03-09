@@ -8,7 +8,7 @@ const (
 	SET_CURRENT_TOOL
 	SET_CURRENT_SPRITE
 	GET_SELECTED_SPRITE
-	SET_CANVAS
+	UPDATE_CANVAS
 	GET_PIXELS
 	SET_ELEMENT
 	SET_PIXEL
@@ -25,6 +25,10 @@ const (
 	LEFT_CLICK
 	RIGHT_CLICK
 	PUSH_TO_CLIPBOARD
+	LEFT
+	RIGHT
+	UP
+	DOWN
 )
 
 func (t Topic) String() string {
@@ -39,8 +43,8 @@ func (t Topic) String() string {
 		return "SET_CURRENT_SPRITE"
 	case GET_SELECTED_SPRITE:
 		return "GET_SELECTED_SPRITE"
-	case SET_CANVAS:
-		return "SET_CANVAS"
+	case UPDATE_CANVAS:
+		return "UPDATE_CANVAS"
 	case GET_PIXELS:
 		return "GET_PIXELS"
 	case SET_ELEMENT:
@@ -73,6 +77,14 @@ func (t Topic) String() string {
 		return "RIGHT_CLICK"
 	case PUSH_TO_CLIPBOARD:
 		return "PUSH_TO_CLIPBOARD"
+	case LEFT:
+		return "LEFT"
+	case RIGHT:
+		return "RIGHT"
+	case UP:
+		return "UP"
+	case DOWN:
+		return "DOWN"
 	}
 	return "unkown"
 }

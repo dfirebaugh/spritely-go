@@ -20,17 +20,9 @@ func (s *Sprite) mailbox() {
 		case topic.SET_CURRENT_COLOR:
 			s.currentColor = m.GetPayload().(color.Color)
 		case topic.SET_CURRENT_TOOL:
-			s.currentTool = m.GetPayload().(tool.Tool)
-		case topic.PASTE:
-			if !s.isCanvas {
-				return
-			}
-			s.Widget.SetElements(m.GetPayload().([][]*widget.Element))
-		case topic.SET_CANVAS:
-			if !s.isCanvas {
-				return
-			}
-			s.Widget.SetElements(m.GetPayload().([][]*widget.Element))
+			s.setCurrentTool(m.GetPayload().(tool.Tool))
+		case topic.UPDATE_CANVAS:
+			s.udpateCanvas(m.GetPayload().([][]*widget.Element))
 		}
 	}
 }

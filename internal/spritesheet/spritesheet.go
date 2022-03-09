@@ -38,7 +38,6 @@ func New(broker *broker.Broker, spriteSheetOffset geom.Offset, spriteSize geom.S
 		var spriteRow []*sprite.Sprite
 		var selectionRow []color.Color
 		for x := 0; x < ss.rowSize; x++ {
-			// spriteRow = append(spriteRow, color.Transparent)
 			spriteRow = append(spriteRow, sprite.New(broker, geom.Offset{
 				X: float64(x*ss.pixelSize*ss.spriteRowSize) + spriteSheetOffset.X,
 				Y: float64(y*ss.pixelSize*ss.spriteRowSize) + spriteSheetOffset.Y,
@@ -73,14 +72,25 @@ func (ss *SpriteSheet) handleClick(coordinate geom.Coordinate) {
 	if !ss.Widget.IsWithinBounds(coordinate) {
 		return
 	}
-	ss.selected = ss.Widget.ToLocalCoordinate(coordinate)
-	ss.Widget.SelectElement(ss.selected)
-	ss.broker.Publish(message.Message{
-		Topic:   topic.SET_CANVAS,
-		Payload: ss.GetSprite(ss.selected).Widget.Elements,
-	})
+	ss.selectSprite(coordinate)
 }
 
 func (ss SpriteSheet) GetSprite(local geom.Coordinate) *sprite.Sprite {
 	return ss.sprites[ss.selected.Y][ss.selected.X]
+}
+
+func (ss *SpriteSheet) selectSprite(coordinate geom.Coordinate) {
+	ss.selectFromLocal(ss.Widget.ToLocalCoordinate(coordinate))
+}
+
+func (ss *SpriteSheet) selectFromLocal(local geom.Coordinate) {
+	if !ss.Widget.IsWithinLocalBounds(local) {
+		return
+	}
+	ss.selected = local
+	ss.Widget.SelectElement(local)
+	ss.broker.Publish(message.Message{
+		Topic:   topic.UPDATE_CANVAS,
+		Payload: ss.GetSprite(ss.selected).Widget.Elements,
+	})
 }

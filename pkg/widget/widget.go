@@ -139,8 +139,34 @@ func (w *Widget) DeriveBounds() geom.Bounds {
 	}
 }
 
+func (w *Widget) DeriveLocalBounds() geom.Bounds {
+	return geom.Bounds{
+		Lower: geom.Coordinate{
+			X: 0,
+			Y: 0,
+		},
+		Higher: geom.Coordinate{
+			X: len(w.Elements[0]) - 1,
+			Y: len(w.Elements) - 1,
+		},
+	}
+}
+
 func (w *Widget) IsWithinBounds(coordinate geom.Coordinate) bool {
 	bounds := w.DeriveBounds()
+	if coordinate.X < (bounds.Lower.X) || coordinate.X > (bounds.Higher.X) {
+		return false
+	}
+	if coordinate.Y < (bounds.Lower.Y) || coordinate.Y > (bounds.Higher.Y) {
+		return false
+	}
+
+	return true
+}
+
+func (w *Widget) IsWithinLocalBounds(coordinate geom.Coordinate) bool {
+	bounds := w.DeriveLocalBounds()
+
 	if coordinate.X < (bounds.Lower.X) || coordinate.X > (bounds.Higher.X) {
 		return false
 	}
@@ -216,4 +242,8 @@ func DebugPrint(elements [][]*Element) {
 		println()
 	}
 	println()
+}
+
+func (w Widget) GetSize() int {
+	return len(w.Elements) * len(w.Elements[0])
 }

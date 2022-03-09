@@ -43,3 +43,7 @@ func (e Element) render(dst *ebiten.Image, x int, y int) {
 		)
 	}
 }
+
+func (e Element) ColorMatches(e2 *Element) bool {
+	return e.Graphic.(color.Color) == e2.Graphic.(color.Color)
+}
