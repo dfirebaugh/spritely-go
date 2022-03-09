@@ -3,6 +3,8 @@ package toolbar
 import (
 	_ "image/png"
 	"log"
+	"spritely/internal/shared/message"
+	"spritely/internal/shared/topic"
 	"spritely/internal/tool"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
@@ -105,10 +107,22 @@ func (tb *ToolBar) pick(t tool.Tool) {
 	switch t {
 	case tool.Pencil:
 		tb.currentTool = tool.Pencil
+		tb.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_TOOL,
+			Payload: tool.Pencil,
+		})
 	case tool.Fill:
 		tb.currentTool = tool.Fill
+		tb.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_TOOL,
+			Payload: tool.Fill,
+		})
 	case tool.Drag:
 		tb.currentTool = tool.Drag
+		tb.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_TOOL,
+			Payload: tool.Drag,
+		})
 	case tool.Undo:
 		go tb.delaySwitch()
 	case tool.Redo:

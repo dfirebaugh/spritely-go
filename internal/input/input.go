@@ -46,28 +46,34 @@ func (i Controller) Update() {
 		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		println("save")
-		// i.actorSystem.Lookup(i.mediator).Message(actor.Message{
-		// 	Topic: topic.SAVE,
-		// })
+		i.broker.Publish(message.Message{
+			Topic: topic.SAVE,
+		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyC) {
-		println("copy")
 		i.broker.Publish(message.Message{
 			Topic: topic.COPY,
 		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
-		println("paste")
 		i.broker.Publish(message.Message{
 			Topic:   topic.PASTE,
 			Payload: i.clipboard.Pixels,
 		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyZ) {
+		i.broker.Publish(message.Message{
+			Topic: topic.UNDO,
+		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyY) {
+		i.broker.Publish(message.Message{
+			Topic: topic.REDO,
+		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyZ) {
+		i.broker.Publish(message.Message{
+			Topic: topic.REDO,
+		})
 	}
 }

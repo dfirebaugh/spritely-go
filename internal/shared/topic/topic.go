@@ -20,6 +20,8 @@ const (
 	HANDLE_CLICK
 	COPY
 	PASTE
+	UNDO
+	REDO
 	LEFT_CLICK
 	RIGHT_CLICK
 	PUSH_TO_CLIPBOARD
@@ -61,6 +63,10 @@ func (t Topic) String() string {
 		return "PASTE"
 	case COPY:
 		return "COPY"
+	case UNDO:
+		return "UNDO"
+	case REDO:
+		return "REDO"
 	case LEFT_CLICK:
 		return "LEFT_CLICK"
 	case RIGHT_CLICK:

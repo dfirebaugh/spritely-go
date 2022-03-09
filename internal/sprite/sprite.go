@@ -2,8 +2,10 @@ package sprite
 
 import (
 	"image/color"
+	"spritely/internal/shared"
 	"spritely/internal/shared/message"
 	"spritely/internal/shared/topic"
+	"spritely/internal/tool"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
@@ -15,12 +17,20 @@ type Sprite struct {
 	broker       *broker.Broker
 	Widget       *widget.Widget
 	currentColor color.Color
+	currentTool  tool.Tool
 	isCanvas     bool
 }
 
 func NewCanvas(b *broker.Broker, offset geom.Offset, elementSize geom.Size) *Sprite {
 	c := New(b, offset, elementSize)
 	c.isCanvas = true
+
+	c.currentColor = shared.DefaultColors[0][1]
+	go c.broker.Publish(message.Message{
+		Topic:   topic.SET_CURRENT_COLOR,
+		Payload: c.currentColor,
+	})
+
 	return c
 }
 
@@ -76,10 +86,16 @@ func (s *Sprite) handleRightClick(coord geom.Coordinate) {
 		return
 	}
 	local := s.Widget.ToLocalCoordinate(coord)
-	s.broker.Publish(message.Message{
-		Topic:   topic.SET_CURRENT_COLOR,
-		Payload: s.Widget.Elements[local.Y][local.X].Graphic,
-	})
+	switch s.currentTool {
+	case tool.Pencil:
+		s.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_COLOR,
+			Payload: s.Widget.Elements[local.Y][local.X].Graphic,
+		})
+	case tool.Fill:
+		println(tool.Fill.String())
+
+	}
 }
 
 func (s *Sprite) SetPixel(coord geom.Coordinate) {
