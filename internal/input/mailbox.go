@@ -2,19 +2,16 @@ package input
 
 import (
 	"spritely/internal/shared/topic"
-	"spritely/pkg/actor"
+	"spritely/pkg/widget"
 )
 
-func (i *InputController) Message(msg actor.Message) {
-	switch msg.Topic {
-	case topic.UPDATE:
-		i.Update()
-	case topic.PUSH_PIXELS:
-		i.actorSystem.Lookup(i.clipboard).Message(msg)
-	case topic.GET_PIXELS:
-		i.actorSystem.Lookup(i.clipboard).Message(msg)
+func (i *Controller) mailbox() {
+	msg := i.broker.Subscribe()
+	for {
+		m := <-msg
+		switch m.GetTopic() {
+		case topic.PUSH_TO_CLIPBOARD:
+			i.clipboard.ReceivePixels(m.GetPayload().([][]*widget.Element))
+		}
 	}
-}
-func (i *InputController) SetAddress(address actor.Address) {
-	i.address = address
 }

@@ -22,13 +22,11 @@ func New(screenWidth int, screenHeight int) *Game {
 		Height:   screenHeight,
 		mediator: mediator.New(),
 	}
-
 	return game
 }
 
 func (g *Game) Update() error {
 	g.mediator.Update()
-
 	return nil
 }
 

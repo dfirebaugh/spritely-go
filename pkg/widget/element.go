@@ -10,7 +10,7 @@ import (
 
 type Element struct {
 	Graphic interface{}
-	size    Size
+	size    geom.Size
 	offset  geom.Offset
 }
 

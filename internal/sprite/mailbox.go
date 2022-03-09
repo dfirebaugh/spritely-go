@@ -1,44 +1,38 @@
 package sprite
 
 import (
+	"image/color"
 	"spritely/internal/shared/topic"
-	"spritely/pkg/actor"
 	"spritely/pkg/geom"
-
-	log "github.com/sirupsen/logrus"
+	"spritely/pkg/widget"
 )
 
-func (s *Sprite) Message(msg actor.Message) {
-	switch msg.Topic {
-	case topic.RENDER:
-		s.actorSystem.Lookup(s.widgetAddress).Message(msg)
-	case topic.UPDATE:
-		s.actorSystem.Lookup(s.widgetAddress).Message(msg)
-		s.update()
-	case topic.SET_OFFSET:
-		s.actorSystem.Lookup(s.widgetAddress).Message(actor.Message{
-			Topic: msg.Topic,
-			Payload: geom.Offset{
-				X: msg.Payload.(geom.Offset).X + s.offset.X,
-				Y: msg.Payload.(geom.Offset).Y + s.offset.Y,
-			},
-		})
-	case topic.PUSH_PIXELS:
-		if msg.Payload == nil {
-			log.Errorf("sprite message: expected pixels but none were received")
+var lastMsg string
+
+func (s *Sprite) mailbox() {
+	msg := s.broker.Subscribe()
+	for {
+		m := <-msg
+		if lastMsg == m.Hash() {
 			return
 		}
-		// forward push pixels msg to the widget
-		s.actorSystem.Lookup(s.widgetAddress).Message(msg)
-	case topic.SET_PIXEL:
-		s.actorSystem.Lookup(s.widgetAddress).Message(msg)
-	case topic.GET_PIXELS:
-		s.actorSystem.Lookup(s.widgetAddress).Message(msg)
-	case topic.HANDLE_CLICK:
-		s.handleClick(msg.Payload.(geom.Coordinate))
+		switch m.GetTopic() {
+		case topic.LEFT_CLICK:
+			s.handleClick(m.GetPayload().(geom.Coordinate))
+		case topic.RIGHT_CLICK:
+			s.handleRightClick(m.GetPayload().(geom.Coordinate))
+		case topic.SET_CURRENT_COLOR:
+			s.currentColor = m.GetPayload().(color.Color)
+		case topic.PASTE:
+			if !s.isCanvas {
+				return
+			}
+			s.Widget.SetElements(m.GetPayload().([][]*widget.Element))
+		case topic.SET_CANVAS:
+			if !s.isCanvas {
+				return
+			}
+			s.Widget.SetElements(m.GetPayload().([][]*widget.Element))
+		}
 	}
-}
-
-func (s *Sprite) SetAddress(address actor.Address) {
-	s.address = address
 }

@@ -1,6 +1,7 @@
 package widget
 
 import (
+	"fmt"
 	"image/color"
 	"spritely/pkg/draw"
 	"spritely/pkg/geom"
@@ -8,47 +9,44 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Size struct {
-	Width  int
-	Height int
-}
-
 type Widget struct {
 	Elements    [][]*Element
-	elementSize Size
+	elementSize geom.Size
 	selected    geom.Coordinate
 	offset      geom.Offset
 	selectable  bool
 }
 
-func NewSelectableColors(colors [][]color.Color, elementSize Size) *Widget {
-	widget := NewWithColorElements(colors, elementSize)
+func NewSelectableColors(colors [][]color.Color, elementSize geom.Size, offset geom.Offset) *Widget {
+	widget := NewWithColorElements(colors, elementSize, offset)
 	widget.selectable = true
 	return widget
 }
-func NewSelectableImages(images [][]*ebiten.Image, elementSize Size) *Widget {
-	widget := NewWithImageElements(images, elementSize)
+func NewSelectableImages(images [][]*ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
+	widget := NewWithImageElements(images, elementSize, offset)
 	widget.selectable = true
 	return widget
 }
-func NewWithImageElements(images [][]*ebiten.Image, elementSize Size) *Widget {
+func NewWithImageElements(images [][]*ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := Widget{
 		elementSize: elementSize,
 		selectable:  false,
 	}
 	widget.initImages(images, elementSize)
+	widget.SetOffset(offset)
 	return &widget
 }
-func NewWithColorElements(colors [][]color.Color, elementSize Size) *Widget {
+func NewWithColorElements(colors [][]color.Color, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := Widget{
 		elementSize: elementSize,
 		selectable:  false,
 	}
 	widget.initColors(colors, elementSize)
+	widget.SetOffset(offset)
 	return &widget
 }
 
-func (w *Widget) initColors(graphics [][]color.Color, elementSize Size) {
+func (w *Widget) initColors(graphics [][]color.Color, elementSize geom.Size) {
 	var elements [][]*Element
 	for _, v := range graphics {
 		var elementRow []*Element
@@ -62,7 +60,7 @@ func (w *Widget) initColors(graphics [][]color.Color, elementSize Size) {
 	}
 	w.Elements = elements
 }
-func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize Size) {
+func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize geom.Size) {
 	var elements [][]*Element
 	for _, v := range graphics {
 		var elementRow []*Element
@@ -75,6 +73,22 @@ func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize Size) {
 		elements = append(elements, elementRow)
 	}
 	w.Elements = elements
+}
+
+func (w *Widget) Update() {
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		coord := geom.Coordinate{
+			X: x,
+			Y: y,
+		}
+
+		if !w.IsWithinBounds(coord) {
+			return
+		}
+		local := w.ToLocalCoordinate(coord)
+		w.SelectElement(local)
+	}
 }
 
 func (w *Widget) Render(dst *ebiten.Image) {
@@ -153,4 +167,53 @@ func ToCoordinate(x int, y int) geom.Coordinate {
 		X: x,
 		Y: y,
 	}
+}
+
+func (w *Widget) SetElements(elements [][]*Element) {
+	// w.Elements = w.DeepCopy(elements)
+	for y, row := range elements {
+		for x, p := range row {
+			w.Elements[y][x].SetGraphic(p.Graphic)
+		}
+	}
+}
+
+func (w *Widget) GetElement(local geom.Coordinate) *Element {
+	return w.Elements[local.Y][local.X]
+}
+
+func (w *Widget) DeepCopy(elements [][]*Element) [][]*Element {
+	var elms [][]*Element
+	for _, row := range elements {
+		var elemRow []*Element
+		for _, p := range row {
+			elemRow = append(elemRow, &Element{
+				Graphic: p.Graphic,
+			})
+		}
+		elms = append(elms, elemRow)
+	}
+	return elms
+}
+
+func (w *Widget) DebugPrint() {
+	for _, row := range w.Elements {
+		for _, p := range row {
+			r, g, b, _ := p.Graphic.(color.Color).RGBA()
+			fmt.Printf("%d,%d,%d ", r, g, b)
+		}
+		println()
+	}
+	println()
+}
+
+func DebugPrint(elements [][]*Element) {
+	for _, row := range elements {
+		for _, p := range row {
+			r, g, b, _ := p.Graphic.(color.Color).RGBA()
+			fmt.Printf("%d,%d,%d ", r, g, b)
+		}
+		println()
+	}
+	println()
 }

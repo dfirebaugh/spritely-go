@@ -2,13 +2,18 @@ package geom
 
 import "fmt"
 
+type Geometry struct {
+	Size   Size
+	Offset Offset
+}
 type Coordinate struct {
 	X int
 	Y int
 }
 
-func (c Coordinate) String() string {
-	return fmt.Sprintf("(%d, %d)", c.X, c.Y)
+type Size struct {
+	Width  int
+	Height int
 }
 
 type Bounds struct {
@@ -19,6 +24,10 @@ type Bounds struct {
 type Offset struct {
 	X float64
 	Y float64
+}
+
+func (c Coordinate) String() string {
+	return fmt.Sprintf("(%d, %d)", c.X, c.Y)
 }
 
 func (o Offset) String() string {

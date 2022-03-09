@@ -1,36 +1,32 @@
 package spritesheet
 
 import (
+	"image/color"
+	"spritely/internal/shared/message"
 	"spritely/internal/shared/topic"
-	"spritely/pkg/actor"
 	"spritely/pkg/geom"
-
-	"github.com/hajimehoshi/ebiten/v2"
+	"spritely/pkg/widget"
 )
 
-func (ss *SpriteSheet) Message(msg actor.Message) {
-	switch msg.Topic {
-	case topic.SET_OFFSET:
-		ss.actorSystem.Lookup(ss.widgetAddress).Message(msg)
-		for _, s := range ss.spriteAddresses {
-			ss.actorSystem.Lookup(s).Message(msg)
+func (ss *SpriteSheet) mailbox() {
+	msg := ss.broker.Subscribe()
+	for {
+		m := <-msg
+		switch m.GetTopic() {
+		case topic.LEFT_CLICK:
+			ss.handleClick(m.GetPayload().(geom.Coordinate))
+		case topic.SET_CURRENT_COLOR:
+			ss.currentColor = m.GetPayload().(color.Color)
+		case topic.SET_PIXEL:
+			coord := m.GetPayload().(geom.Coordinate)
+			ss.sprites[ss.selected.Y][ss.selected.X].Widget.Elements[coord.Y][coord.X].SetGraphic(ss.currentColor)
+		case topic.COPY:
+			ss.broker.Publish(message.Message{
+				Topic:   topic.PUSH_TO_CLIPBOARD,
+				Payload: ss.sprites[ss.selected.Y][ss.selected.X].Widget.Elements,
+			})
+		case topic.PASTE:
+			ss.sprites[ss.selected.Y][ss.selected.X].Widget.SetElements(m.GetPayload().([][]*widget.Element))
 		}
-	case topic.RENDER:
-		ss.render(msg.Payload.(*ebiten.Image))
-	case topic.UPDATE:
-		ss.update()
-	case topic.SAVE:
-		ss.save()
-	case topic.HANDLE_CLICK:
-		ss.handleClick(msg.Payload.(geom.Coordinate))
-	case topic.SET_PIXEL:
-		ss.actorSystem.Lookup(ss.spriteAddresses[ss.coordToIndex(ss.selected)]).Message(msg)
-	case topic.GET_PIXELS:
-		// ask the selected sprite to send it's pixels to the requestor
-		ss.actorSystem.Lookup(ss.spriteAddresses[ss.coordToIndex(ss.selected)]).Message(msg)
 	}
-}
-
-func (s *SpriteSheet) SetAddress(address actor.Address) {
-	s.address = address
 }

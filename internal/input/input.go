@@ -2,27 +2,49 @@ package input
 
 import (
 	"spritely/internal/clipboard"
+	"spritely/internal/shared/message"
 	"spritely/internal/shared/topic"
-	"spritely/pkg/actor"
+	"spritely/pkg/broker"
+	"spritely/pkg/geom"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type InputController struct {
-	actorSystem *actor.ActorSystem
-	mediator    actor.Address
-	address     actor.Address
-	clipboard   actor.Address
+type Controller struct {
+	broker    *broker.Broker
+	clipboard *clipboard.Controller
 }
 
-func New(as *actor.ActorSystem, mediator actor.Address) actor.Address {
-	return as.Register(&InputController{actorSystem: as, mediator: mediator,
-		clipboard: clipboard.New(as),
-	})
+func New(b *broker.Broker) *Controller {
+	i := Controller{broker: b, clipboard: clipboard.New()}
+	go i.mailbox()
+	return &i
 }
 
-func (i InputController) Update() {
+func (i Controller) Update() {
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		coordinate := geom.Coordinate{
+			X: x,
+			Y: y,
+		}
+		i.broker.Publish(message.Message{
+			Topic:   topic.LEFT_CLICK,
+			Payload: coordinate,
+		})
+	}
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+		x, y := ebiten.CursorPosition()
+		coordinate := geom.Coordinate{
+			X: x,
+			Y: y,
+		}
+		i.broker.Publish(message.Message{
+			Topic:   topic.RIGHT_CLICK,
+			Payload: coordinate,
+		})
+	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyS) {
 		println("save")
 		// i.actorSystem.Lookup(i.mediator).Message(actor.Message{
@@ -31,16 +53,15 @@ func (i InputController) Update() {
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyC) {
 		println("copy")
-		i.actorSystem.Lookup(i.mediator).Message(actor.Message{
-			Topic:     topic.GET_SELECTED_SPRITE,
-			Requestor: i.clipboard,
+		i.broker.Publish(message.Message{
+			Topic: topic.COPY,
 		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
 		println("paste")
-		i.actorSystem.Lookup(i.clipboard).Message(actor.Message{
-			Topic:     topic.PASTE,
-			Requestor: i.mediator,
+		i.broker.Publish(message.Message{
+			Topic:   topic.PASTE,
+			Payload: i.clipboard.Pixels,
 		})
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyZ) {

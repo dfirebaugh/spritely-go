@@ -3,10 +3,8 @@ package toolbar
 import (
 	_ "image/png"
 	"log"
-	"spritely/internal/shared/topic"
 	"spritely/internal/tool"
-	"spritely/internal/widgetmediator"
-	"spritely/pkg/actor"
+	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
 
@@ -60,16 +58,17 @@ func init() {
 }
 
 type ToolBar struct {
-	actorSystem   *actor.ActorSystem
-	mediator      actor.Address
-	address       actor.Address
-	widgetAddress actor.Address
-	currentTool   tool.Tool
-	offset        geom.Offset
-	elementSize   widget.Size
+	broker *broker.Broker
+	// mediator      actor.Address
+	// address       actor.Address
+	// widgetAddress actor.Address
+	currentTool tool.Tool
+	offset      geom.Offset
+	elementSize geom.Size
+	Widget      *widget.Widget
 }
 
-func New(as *actor.ActorSystem, mediator actor.Address, offset geom.Offset, elementSize widget.Size) actor.Address {
+func New(broker *broker.Broker, offset geom.Offset, elementSize geom.Size) *ToolBar {
 	elements := [][]*ebiten.Image{
 		{
 			penImg,
@@ -83,35 +82,14 @@ func New(as *actor.ActorSystem, mediator actor.Address, offset geom.Offset, elem
 		},
 	}
 	toolbar := ToolBar{
-		actorSystem: as,
-		mediator:    mediator,
+		broker:      broker,
 		currentTool: tool.Pencil,
 		offset:      offset,
 		elementSize: elementSize,
 	}
-	toolbar.widgetAddress = widgetmediator.NewSelectableImages(as, elements, elementSize)
-	as.Lookup(toolbar.widgetAddress).Message(actor.Message{
-		Topic:   topic.SET_OFFSET,
-		Payload: offset,
-	})
+	toolbar.Widget = widget.NewSelectableImages(elements, elementSize, offset)
 
-	return as.Register(&toolbar)
-}
-
-func (t *ToolBar) update() {
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-		coordinate := geom.Coordinate{
-			X: x,
-			Y: y,
-		}
-
-		t.actorSystem.Lookup(t.widgetAddress).Message(actor.Message{
-			Topic:     topic.HANDLE_CLICK,
-			Requestor: t.address,
-			Payload:   coordinate,
-		})
-	}
+	return &toolbar
 }
 
 func (t *ToolBar) delaySwitch() {

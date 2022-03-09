@@ -2,10 +2,9 @@ package sprite
 
 import (
 	"image/color"
-	"spritely/internal/shared/request"
+	"spritely/internal/shared/message"
 	"spritely/internal/shared/topic"
-	"spritely/internal/widgetmediator"
-	"spritely/pkg/actor"
+	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
 
@@ -13,28 +12,27 @@ import (
 )
 
 type Sprite struct {
-	actorSystem   *actor.ActorSystem
-	mediator      actor.Address
-	offset        geom.Offset
-	address       actor.Address
-	widgetAddress actor.Address
+	broker       *broker.Broker
+	Widget       *widget.Widget
+	currentColor color.Color
+	isCanvas     bool
+}
+
+func NewCanvas(b *broker.Broker, offset geom.Offset, elementSize geom.Size) *Sprite {
+	c := New(b, offset, elementSize)
+	c.isCanvas = true
+	return c
 }
 
 // as *actor.ActorSystem, spriteSheetOffset geom.Offset, spriteSize widget.Size
-func New(as *actor.ActorSystem, mediator actor.Address, offset geom.Offset, elementSize widget.Size) actor.Address {
+func New(b *broker.Broker, offset geom.Offset, elementSize geom.Size) *Sprite {
 	sprite := Sprite{
-		actorSystem: as,
-		mediator:    mediator,
+		broker: b,
 	}
 
-	sprite.widgetAddress = widgetmediator.NewWithColorElements(as, sprite.initWidget(8), elementSize)
-
-	as.Lookup(sprite.widgetAddress).Message(actor.Message{
-		Topic:   topic.SET_OFFSET,
-		Payload: offset,
-	})
-
-	return as.Register(&sprite)
+	sprite.Widget = widget.NewWithColorElements(sprite.initWidget(8), elementSize, offset)
+	go sprite.mailbox()
+	return &sprite
 }
 
 func (s *Sprite) initWidget(rowSize int) [][]color.Color {
@@ -51,27 +49,39 @@ func (s *Sprite) initWidget(rowSize int) [][]color.Color {
 	return elements
 }
 
-func (s *Sprite) update() {
-	if !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+func (s *Sprite) Render(dst *ebiten.Image) {
+	s.Widget.Render(dst)
+}
+func (s *Sprite) handleClick(coord geom.Coordinate) {
+	if !s.isCanvas {
 		return
 	}
-	x, y := ebiten.CursorPosition()
-	s.actorSystem.Lookup(s.widgetAddress).Message(actor.Message{
-		Topic:     topic.HANDLE_CLICK,
-		Requestor: s.address,
-		Payload: geom.Coordinate{
-			X: x,
-			Y: y,
-		},
-	})
+	if !s.Widget.IsWithinBounds(coord) {
+		return
+	}
+	local := s.Widget.ToLocalCoordinate(coord)
+	s.SetPixel(local)
+	s.Widget.SelectElement(local)
 }
 
-func (s *Sprite) handleClick(coord geom.Coordinate) {
-	s.actorSystem.Lookup(s.mediator).Message(actor.Message{
-		Topic:     topic.SET_PIXEL,
-		Requestor: s.widgetAddress,
-		Payload: request.SetPixel{
-			Coordinate: coord,
-		},
+func (s *Sprite) handleRightClick(coord geom.Coordinate) {
+	if !s.isCanvas {
+		return
+	}
+	if !s.Widget.IsWithinBounds(coord) {
+		return
+	}
+	// get the color and then select it on the colorPicker
+	// local := s.Widget.ToLocalCoordinate(coord)
+	// s.Widget.GetElement(local).Graphic
+	// s.SetPixel(local)
+	// s.Widget.SelectElement(local)
+}
+
+func (s *Sprite) SetPixel(coord geom.Coordinate) {
+	s.Widget.Elements[coord.Y][coord.X].SetGraphic(s.currentColor)
+	s.broker.Publish(message.Message{
+		Topic:   topic.SET_PIXEL,
+		Payload: coord,
 	})
 }

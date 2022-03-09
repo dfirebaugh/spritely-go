@@ -2,7 +2,7 @@
 
 This is an implementation of [spritely-editor](https://github.com/dfirebaugh/spritely-editor) written in golang.
 
-Why? Go is pretty sweet. Also, I'm learning about the [actor model](https://en.wikipedia.org/wiki/Actor_model).
+Why? Go is pretty sweet.
 
 
 ## Demo

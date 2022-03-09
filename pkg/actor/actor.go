@@ -10,9 +10,28 @@ import (
 
 type Address uuid.UUID
 
-type Actor interface {
-	Message(Message)
-	SetAddress(Address)
+// type Actor interface {
+// 	Message(Message)
+// 	SetAddress(Address)
+// }
+
+type Actor struct {
+	address  Address
+	children map[Address]Actor
+}
+
+func (a *Actor) SpawnChild() {
+
+}
+func (a *Actor) Publish() {
+
+}
+func (a *Actor) SubScribe() {
+
+}
+
+func (a *Actor) SetAddress(addr Address) {
+	a.address = addr
 }
 
 type ActorSystem struct {
@@ -63,14 +82,16 @@ func (a ActorSystem) Register(actor Actor) Address {
 	return address
 }
 
-func (a ActorSystem) Lookup(uid Address) Actor {
-	if val, ok := a.addressBook[uid]; ok {
-		return val
-	}
+// func (a ActorSystem) Lookup(uid Address) Actor {
+// 	if val, ok := a.addressBook[uid]; ok {
+// 		return val
+// 	}
 
-	return messageStub{}
-}
+// 	return messageStub{}
+// }
 
+// String
+// a string representation of the actor's address
 func (a Address) String() string {
 	return uuid.UUID(a).String()
 }

@@ -1,26 +1,20 @@
 package colorpicker
 
 import (
+	"image/color"
 	"spritely/internal/shared/topic"
-	"spritely/pkg/actor"
 	"spritely/pkg/geom"
 )
 
-func (c *ColorPicker) Message(msg actor.Message) {
-	switch msg.Topic {
-	case topic.SET_OFFSET:
-		c.actor.Lookup(c.widgetAddress).Message(msg)
-	case topic.RENDER:
-		c.actor.Lookup(c.widgetAddress).Message(msg)
-	case topic.UPDATE:
-		c.update()
-	case topic.SET_CURRENT_COLOR:
-		c.pick(msg.Payload.(geom.Coordinate))
-	case topic.HANDLE_CLICK:
-		c.pick(msg.Payload.(geom.Coordinate))
+func (c *ColorPicker) mailbox() {
+	msg := c.broker.Subscribe()
+	for {
+		m := <-msg
+		switch m.GetTopic() {
+		case topic.LEFT_CLICK:
+			c.handleClick(m.GetPayload().(geom.Coordinate))
+		case topic.SET_CURRENT_COLOR:
+			c.selectCurrentColor(m.GetPayload().(color.Color))
+		}
 	}
-}
-
-func (c *ColorPicker) SetAddress(address actor.Address) {
-	c.address = address
 }

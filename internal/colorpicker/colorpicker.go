@@ -3,42 +3,35 @@ package colorpicker
 import (
 	"image/color"
 	"spritely/internal/shared"
+	"spritely/internal/shared/message"
 	"spritely/internal/shared/topic"
-	"spritely/internal/widgetmediator"
-	"spritely/pkg/actor"
+	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
-
-	ebiten "github.com/hajimehoshi/ebiten/v2"
 )
 
 type ColorPicker struct {
-	actor            *actor.ActorSystem
-	mediator         actor.Address
-	address          actor.Address
-	currentSelection geom.Coordinate
-	palette          shared.Palette
-	widgetAddress    actor.Address
+	broker  *broker.Broker
+	palette shared.Palette
+	Widget  *widget.Widget
 }
 
-func New(as *actor.ActorSystem, mediator actor.Address, offset geom.Offset, pixelSize int) actor.Address {
+func New(b *broker.Broker, offset geom.Offset, pixelSize int) *ColorPicker {
 	cp := ColorPicker{
-		actor:    as,
-		mediator: mediator,
-		palette:  shared.DefaultColors,
+		broker:  b,
+		palette: shared.DefaultColors,
 	}
 
-	cp.widgetAddress = widgetmediator.NewSelectableColors(as, cp.initWidget(), widget.Size{
+	cp.Widget = widget.NewSelectableColors(cp.initWidget(), geom.Size{
 		Width:  pixelSize,
 		Height: pixelSize,
-	})
+	},
+		offset,
+	)
 
-	as.Lookup(cp.widgetAddress).Message(actor.Message{
-		Topic:   topic.SET_OFFSET,
-		Payload: offset,
-	})
+	go cp.mailbox()
 
-	return as.Register(&cp)
+	return &cp
 }
 
 func (c *ColorPicker) initWidget() [][]color.Color {
@@ -54,24 +47,35 @@ func (c *ColorPicker) initWidget() [][]color.Color {
 	return elements
 }
 
-func (c *ColorPicker) update() {
-	if !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+func (c *ColorPicker) handleClick(coord geom.Coordinate) {
+	if !c.Widget.IsWithinBounds(coord) {
 		return
 	}
-	x, y := ebiten.CursorPosition()
-	c.actor.Lookup(c.widgetAddress).Message(actor.Message{
-		Topic:     topic.HANDLE_CLICK,
-		Requestor: c.address,
-		Payload: geom.Coordinate{
-			X: x,
-			Y: y,
-		},
+	local := c.Widget.ToLocalCoordinate(coord)
+	c.broker.Publish(message.Message{
+		Topic:   topic.SET_CURRENT_COLOR,
+		Payload: c.palette[local.X][local.Y],
 	})
 }
 
-func (c *ColorPicker) pick(coord geom.Coordinate) {
-	c.actor.Lookup(c.mediator).Message(actor.Message{
-		Topic:   topic.SET_CURRENT_COLOR,
-		Payload: c.palette[coord.X][coord.Y],
-	})
+func (c *ColorPicker) colorToCoord(color color.Color) geom.Coordinate {
+	var coord geom.Coordinate
+	for x, row := range c.palette {
+		for y, clr := range row {
+			if clr != color {
+				continue
+			}
+			coord = geom.Coordinate{
+				X: x,
+				Y: y,
+			}
+			break
+		}
+	}
+	return coord
+}
+
+func (c *ColorPicker) selectCurrentColor(clr color.Color) {
+	local := c.colorToCoord(clr)
+	c.Widget.SelectElement(local)
 }
