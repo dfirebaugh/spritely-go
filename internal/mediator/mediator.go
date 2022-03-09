@@ -3,6 +3,9 @@ package mediator
 import (
 	"spritely/internal/colorpicker"
 	"spritely/internal/input"
+	"spritely/internal/shared"
+	"spritely/internal/shared/message"
+	"spritely/internal/shared/topic"
 	"spritely/internal/sprite"
 	"spritely/internal/spritesheet"
 	"spritely/internal/toolbar"
@@ -61,6 +64,11 @@ func New() Mediator {
 	}
 
 	go mediator.broker.Start()
+
+	mediator.broker.Publish(message.Message{
+		Topic:   topic.SET_CURRENT_COLOR,
+		Payload: shared.DefaultColors[0][1],
+	})
 
 	return mediator
 }

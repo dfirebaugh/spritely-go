@@ -7,6 +7,7 @@ import (
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
+	"time"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -58,10 +59,7 @@ func init() {
 }
 
 type ToolBar struct {
-	broker *broker.Broker
-	// mediator      actor.Address
-	// address       actor.Address
-	// widgetAddress actor.Address
+	broker      *broker.Broker
 	currentTool tool.Tool
 	offset      geom.Offset
 	elementSize geom.Size
@@ -89,16 +87,18 @@ func New(broker *broker.Broker, offset geom.Offset, elementSize geom.Size) *Tool
 	}
 	toolbar.Widget = widget.NewSelectableImages(elements, elementSize, offset)
 
+	go toolbar.mailbox()
+
 	return &toolbar
 }
 
 func (t *ToolBar) delaySwitch() {
-	// time.Sleep(200 * time.Millisecond)
-	// t.pick(t.currentTool)
-	// t.actorSystem.Lookup(t.widgetAddress).Message(actor.Message{
-	// 	Topic:   topic.SET_CURRENT_TOOL,
-	// 	Payload: t.currentTool,
-	// })
+	time.Sleep(100 * time.Millisecond)
+	t.pick(t.currentTool)
+	t.Widget.SelectElement(geom.Coordinate{
+		X: int(t.currentTool),
+		Y: 0,
+	})
 }
 
 func (tb *ToolBar) pick(t tool.Tool) {
@@ -110,18 +110,23 @@ func (tb *ToolBar) pick(t tool.Tool) {
 	case tool.Drag:
 		tb.currentTool = tool.Drag
 	case tool.Undo:
-		tb.delaySwitch()
+		go tb.delaySwitch()
 	case tool.Redo:
-		tb.delaySwitch()
+		go tb.delaySwitch()
 	case tool.Open:
-		tb.delaySwitch()
+		go tb.delaySwitch()
 	case tool.Save:
-		tb.delaySwitch()
+		go tb.delaySwitch()
 	case tool.Info:
-		tb.delaySwitch()
+		go tb.delaySwitch()
 	}
-	// tb.actorSystem.Lookup(tb.widgetAddress).Message(actor.Message{
-	// 	Topic:   topic.SET_CURRENT_TOOL,
-	// 	Payload: t,
-	// })
+}
+
+func (t *ToolBar) handleClick(coord geom.Coordinate) {
+	if !t.Widget.IsWithinBounds(coord) {
+		return
+	}
+	local := t.Widget.ToLocalCoordinate(coord)
+	t.pick(tool.Tool(local.X))
+	t.Widget.SelectElement(local)
 }

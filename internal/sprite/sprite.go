@@ -71,11 +71,15 @@ func (s *Sprite) handleRightClick(coord geom.Coordinate) {
 	if !s.Widget.IsWithinBounds(coord) {
 		return
 	}
-	// get the color and then select it on the colorPicker
-	// local := s.Widget.ToLocalCoordinate(coord)
-	// s.Widget.GetElement(local).Graphic
-	// s.SetPixel(local)
-	// s.Widget.SelectElement(local)
+
+	if !s.isCanvas {
+		return
+	}
+	local := s.Widget.ToLocalCoordinate(coord)
+	s.broker.Publish(message.Message{
+		Topic:   topic.SET_CURRENT_COLOR,
+		Payload: s.Widget.Elements[local.Y][local.X].Graphic,
+	})
 }
 
 func (s *Sprite) SetPixel(coord geom.Coordinate) {
