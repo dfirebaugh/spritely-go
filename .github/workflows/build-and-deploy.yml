@@ -18,9 +18,6 @@ jobs:
     - name: Verify go installation
       run: go version
 
-    - name: Install build requirements
-      run: sudo apt-get install libsdl2-ttf-dev libsdl2-image-dev
-
     - name: Build the project
       run: make web && make wasm
 
