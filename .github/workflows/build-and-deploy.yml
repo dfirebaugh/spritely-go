@@ -18,6 +18,9 @@ jobs:
     - name: Verify go installation
       run: go version
 
+    - name: Get dependencies
+      run: go get ./...
+
     - name: Run the tests
       run: go test ./...
 
