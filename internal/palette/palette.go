@@ -6,6 +6,9 @@ const PaletteSize = 4
 
 type Palette []color.Color
 
+// because color.Black is actually a different type
+var Black = color.RGBA{0, 0, 0, 255}
+
 var (
 	DefaultColors = Palette{
 		color.RGBA{127, 36, 84, 255},
@@ -23,7 +26,7 @@ var (
 		color.RGBA{131, 118, 156, 255},
 		color.RGBA{241, 118, 166, 255},
 		color.RGBA{252, 204, 171, 255},
-		color.RGBA{0, 0, 0, 255},
+		Black,
 	}
 )
 

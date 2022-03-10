@@ -38,7 +38,7 @@ func (s *Sprite) initWidget(rowSize int) [][]color.Color {
 	for i := 0; i < rowSize; i++ {
 		var pixelRow []color.Color
 		for j := 0; j < rowSize; j++ {
-			pixelRow = append(pixelRow, color.Black)
+			pixelRow = append(pixelRow, palette.Black)
 		}
 		elements = append(elements, pixelRow)
 	}
@@ -89,9 +89,6 @@ func (s *Sprite) Encode() string {
 }
 
 func getIndex(value color.Color, slice []color.Color) int {
-	if value == color.Black {
-		return 0
-	}
 	for p, v := range slice {
 		if v == value {
 			return p
