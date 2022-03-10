@@ -2,10 +2,10 @@ package sprite
 
 import (
 	"image/color"
-	"spritely/internal/shared"
-	"spritely/internal/shared/message"
-	"spritely/internal/shared/topic"
+	"spritely/internal/message"
+	"spritely/internal/palette"
 	"spritely/internal/tool"
+	"spritely/internal/topic"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
@@ -14,7 +14,7 @@ import (
 func NewCanvas(b *broker.Broker, offset geom.Offset, elementSize geom.Size) *Sprite {
 	c := New(b, offset, elementSize)
 	c.isCanvas = true
-	c.setCurrentColor(shared.DefaultColors[0][1])
+	c.setCurrentColor(palette.DefaultColors[0])
 	return c
 }
 
@@ -49,7 +49,6 @@ func (s *Sprite) setCurrentTool(t tool.Tool) {
 }
 
 func (s *Sprite) pencilOp(local geom.Coordinate) {
-	println(s.currentTool.String())
 	s.setPixel(local)
 	s.broker.Publish(message.Message{
 		Topic:   topic.SET_CURRENT_COLOR,
@@ -60,7 +59,6 @@ func (s *Sprite) pencilOp(local geom.Coordinate) {
 var filledElements map[geom.Coordinate]*widget.Element
 
 func (s *Sprite) fillOp(local geom.Coordinate) {
-	println(s.currentTool.String())
 	filledElements = make(map[geom.Coordinate]*widget.Element, s.Widget.GetSize())
 	s.fillNeighbors(local)
 	s.broker.Publish(message.Message{
@@ -146,7 +144,6 @@ func (s *Sprite) fillNeighbors(local geom.Coordinate) {
 }
 
 func (s *Sprite) dragOp(local geom.Coordinate) {
-	println(s.currentTool.String())
 }
 
 func (s *Sprite) udpateCanvas(elements [][]*widget.Element) {

@@ -2,9 +2,9 @@ package spritesheet
 
 import (
 	"image/color"
-	"spritely/internal/shared/message"
-	"spritely/internal/shared/topic"
+	"spritely/internal/message"
 	"spritely/internal/sprite"
+	"spritely/internal/topic"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"

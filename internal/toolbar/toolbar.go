@@ -3,9 +3,9 @@ package toolbar
 import (
 	_ "image/png"
 	"log"
-	"spritely/internal/shared/message"
-	"spritely/internal/shared/topic"
+	"spritely/internal/message"
 	"spritely/internal/tool"
+	"spritely/internal/topic"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"

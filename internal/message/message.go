@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"spritely/internal/shared/topic"
+	"spritely/internal/topic"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -15,8 +15,8 @@ type Message struct {
 	Payload   interface{}
 }
 
-func (m Message) GetTopic() topic.Topic {
-	return m.Topic
+func (m Message) GetTopic() string {
+	return m.Topic.String()
 }
 func (m Message) GetRequestor() string {
 	return m.Requestor

@@ -13,7 +13,7 @@ type Widget struct {
 	Elements    [][]*Element
 	elementSize geom.Size
 	selected    geom.Coordinate
-	offset      geom.Offset
+	Offset      geom.Offset
 	selectable  bool
 }
 
@@ -52,7 +52,7 @@ func (w *Widget) initColors(graphics [][]color.Color, elementSize geom.Size) {
 		var elementRow []*Element
 		for _, graphic := range v {
 			elementRow = append(elementRow, &Element{
-				size:    elementSize,
+				Size:    elementSize,
 				Graphic: graphic,
 			})
 		}
@@ -66,7 +66,7 @@ func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize geom.Size) {
 		var elementRow []*Element
 		for _, graphic := range v {
 			elementRow = append(elementRow, &Element{
-				size:    elementSize,
+				Size:    elementSize,
 				Graphic: graphic,
 			})
 		}
@@ -94,7 +94,7 @@ func (w *Widget) Update() {
 func (w *Widget) Render(dst *ebiten.Image) {
 	for y, row := range w.Elements {
 		for x, e := range row {
-			e.render(dst, x, y)
+			e.Render(dst, x, y)
 
 			if !w.selectable || y != w.selected.Y || x != w.selected.X {
 				continue
@@ -102,8 +102,8 @@ func (w *Widget) Render(dst *ebiten.Image) {
 
 			draw.DrawBox(
 				dst,
-				float64(x*w.elementSize.Width)+w.offset.X,
-				float64(y*w.elementSize.Height)+w.offset.Y,
+				float64(x*w.elementSize.Width)+w.Offset.X,
+				float64(y*w.elementSize.Height)+w.Offset.Y,
 				float64(w.elementSize.Width),
 				float64(w.elementSize.Height),
 				color.White,
@@ -112,16 +112,16 @@ func (w *Widget) Render(dst *ebiten.Image) {
 	}
 }
 
-func (w *Widget) SetOffset(offset geom.Offset) {
-	w.offset = geom.Offset{
-		X: offset.X,
-		Y: offset.Y,
+func (w *Widget) SetOffset(Offset geom.Offset) {
+	w.Offset = geom.Offset{
+		X: Offset.X,
+		Y: Offset.Y,
 	}
 	for y, row := range w.Elements {
 		for x, e := range row {
-			e.size = w.elementSize
-			e.offset.X = w.offset.X + float64(x*e.size.Width)
-			e.offset.Y = w.offset.Y + float64(y*e.size.Height)
+			e.Size = w.elementSize
+			e.Offset.X = w.Offset.X + float64(x*e.Size.Width)
+			e.Offset.Y = w.Offset.Y + float64(y*e.Size.Height)
 		}
 	}
 }
@@ -129,12 +129,12 @@ func (w *Widget) SetOffset(offset geom.Offset) {
 func (w *Widget) DeriveBounds() geom.Bounds {
 	return geom.Bounds{
 		Lower: geom.Coordinate{
-			X: w.offset.ToCoordinate().X,
-			Y: w.offset.ToCoordinate().Y,
+			X: w.Offset.ToCoordinate().X,
+			Y: w.Offset.ToCoordinate().Y,
 		},
 		Higher: geom.Coordinate{
-			X: w.offset.ToCoordinate().X + (len(w.Elements[0]) * w.elementSize.Width) - 1,
-			Y: w.offset.ToCoordinate().Y + (len(w.Elements) * w.elementSize.Height) - 1,
+			X: w.Offset.ToCoordinate().X + (len(w.Elements[0]) * w.elementSize.Width) - 1,
+			Y: w.Offset.ToCoordinate().Y + (len(w.Elements) * w.elementSize.Height) - 1,
 		},
 	}
 }
@@ -183,8 +183,8 @@ func (w *Widget) SelectElement(coordinate geom.Coordinate) {
 
 func (w Widget) ToLocalCoordinate(coordinate geom.Coordinate) geom.Coordinate {
 	return geom.Coordinate{
-		X: (coordinate.X - w.offset.ToCoordinate().X) / w.elementSize.Width,
-		Y: (coordinate.Y - w.offset.ToCoordinate().Y) / w.elementSize.Height,
+		X: (coordinate.X - w.Offset.ToCoordinate().X) / w.elementSize.Width,
+		Y: (coordinate.Y - w.Offset.ToCoordinate().Y) / w.elementSize.Height,
 	}
 }
 
@@ -226,7 +226,7 @@ func (w *Widget) DebugPrint() {
 	for _, row := range w.Elements {
 		for _, p := range row {
 			r, g, b, _ := p.Graphic.(color.Color).RGBA()
-			fmt.Printf("%d,%d,%d ", r, g, b)
+			fmt.Printf("%d,%d,%d | ", r, g, b)
 		}
 		println()
 	}
@@ -237,7 +237,7 @@ func DebugPrint(elements [][]*Element) {
 	for _, row := range elements {
 		for _, p := range row {
 			r, g, b, _ := p.Graphic.(color.Color).RGBA()
-			fmt.Printf("%d,%d,%d ", r, g, b)
+			fmt.Printf("%d,%d,%d | ", r, g, b)
 		}
 		println()
 	}

@@ -1,7 +1,7 @@
 package input
 
 import (
-	"spritely/internal/shared/topic"
+	"spritely/internal/topic"
 	"spritely/pkg/widget"
 )
 
@@ -10,7 +10,7 @@ func (i *Controller) mailbox() {
 	for {
 		m := <-msg
 		switch m.GetTopic() {
-		case topic.PUSH_TO_CLIPBOARD:
+		case topic.PUSH_TO_CLIPBOARD.String():
 			i.clipboard.ReceivePixels(m.GetPayload().([][]*widget.Element))
 		}
 	}

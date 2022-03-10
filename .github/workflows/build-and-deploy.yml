@@ -18,8 +18,11 @@ jobs:
     - name: Verify go installation
       run: go version
 
+    - name: Run the tests
+      run: go test ./...
+
     - name: Build the project
-      run: make web && make wasm
+      run: make
 
     # Publish the website
     - name: GitHub Pages action

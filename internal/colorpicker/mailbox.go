@@ -2,7 +2,7 @@ package colorpicker
 
 import (
 	"image/color"
-	"spritely/internal/shared/topic"
+	"spritely/internal/topic"
 	"spritely/pkg/geom"
 )
 
@@ -11,9 +11,9 @@ func (c *ColorPicker) mailbox() {
 	for {
 		m := <-msg
 		switch m.GetTopic() {
-		case topic.LEFT_CLICK:
+		case topic.LEFT_CLICK.String():
 			c.handleClick(m.GetPayload().(geom.Coordinate))
-		case topic.SET_CURRENT_COLOR:
+		case topic.SET_CURRENT_COLOR.String():
 			c.selectCurrentColor(m.GetPayload().(color.Color))
 		}
 	}

@@ -1,13 +1,9 @@
 package broker
 
-import (
-	"spritely/internal/shared/topic"
-)
-
 type Message interface {
 	GetPayload() interface{}
 	GetRequestor() string
-	GetTopic() topic.Topic
+	GetTopic() string
 	Hash() string
 	String() string
 }

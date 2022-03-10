@@ -2,9 +2,9 @@ package colorpicker
 
 import (
 	"image/color"
-	"spritely/internal/shared"
-	"spritely/internal/shared/message"
-	"spritely/internal/shared/topic"
+	"spritely/internal/message"
+	"spritely/internal/palette"
+	"spritely/internal/topic"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 	"spritely/pkg/widget"
@@ -12,14 +12,14 @@ import (
 
 type ColorPicker struct {
 	broker  *broker.Broker
-	palette shared.Palette
+	palette palette.Palette
 	Widget  *widget.Widget
 }
 
 func New(b *broker.Broker, offset geom.Offset, pixelSize int) *ColorPicker {
 	cp := ColorPicker{
 		broker:  b,
-		palette: shared.DefaultColors,
+		palette: palette.DefaultColors,
 	}
 
 	cp.Widget = widget.NewSelectableColors(cp.initWidget(), geom.Size{
@@ -36,10 +36,10 @@ func New(b *broker.Broker, offset geom.Offset, pixelSize int) *ColorPicker {
 
 func (c *ColorPicker) initWidget() [][]color.Color {
 	var elements [][]color.Color
-	for y, v := range c.palette {
+	for y, v := range c.palette.To2D() {
 		var pixelRow []color.Color
 		for x := range v {
-			pixelRow = append(pixelRow, c.palette[x][y])
+			pixelRow = append(pixelRow, c.palette.To2D()[x][y])
 		}
 		elements = append(elements, pixelRow)
 	}
@@ -54,13 +54,13 @@ func (c *ColorPicker) handleClick(coord geom.Coordinate) {
 	local := c.Widget.ToLocalCoordinate(coord)
 	c.broker.Publish(message.Message{
 		Topic:   topic.SET_CURRENT_COLOR,
-		Payload: c.palette[local.X][local.Y],
+		Payload: c.palette.To2D()[local.X][local.Y],
 	})
 }
 
 func (c *ColorPicker) colorToCoord(color color.Color) geom.Coordinate {
 	var coord geom.Coordinate
-	for x, row := range c.palette {
+	for x, row := range c.palette.To2D() {
 		for y, clr := range row {
 			if clr != color {
 				continue

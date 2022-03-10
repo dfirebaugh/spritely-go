@@ -10,38 +10,39 @@ import (
 
 type Element struct {
 	Graphic interface{}
-	size    geom.Size
-	offset  geom.Offset
+	Size    geom.Size
+	Offset  geom.Offset
 }
 
 func (e *Element) SetGraphic(graphic interface{}) {
 	e.Graphic = graphic
 }
 
-func (e Element) render(dst *ebiten.Image, x int, y int) {
-	// padding := 4
-	image, ok := e.Graphic.(*ebiten.Image)
-	if ok {
+func (e Element) Render(dst *ebiten.Image, x int, y int) {
+	if image, ok := e.Graphic.(*ebiten.Image); ok {
 		op := &ebiten.DrawImageOptions{}
 
 		op.GeoM.Translate(
-			e.offset.X+float64(e.size.Width/4),
-			e.offset.Y+float64(e.size.Height/4),
+			e.Offset.X+float64(e.Size.Width/4),
+			e.Offset.Y+float64(e.Size.Height/4),
 		)
 		dst.DrawImage(image, op)
 	}
 
-	pixel, ok := e.Graphic.(color.Color)
-	if ok {
-		ebitenutil.DrawRect(
-			dst,
-			e.offset.X,
-			e.offset.Y,
-			float64(e.size.Width),
-			float64(e.size.Height),
-			pixel,
-		)
+	if pixel, ok := e.Graphic.(color.Color); ok {
+		e.RenderPixel(dst, pixel)
 	}
+}
+
+func (e Element) RenderPixel(dst *ebiten.Image, pixel color.Color) {
+	ebitenutil.DrawRect(
+		dst,
+		e.Offset.X,
+		e.Offset.Y,
+		float64(e.Size.Width),
+		float64(e.Size.Height),
+		pixel,
+	)
 }
 
 func (e Element) ColorMatches(e2 *Element) bool {

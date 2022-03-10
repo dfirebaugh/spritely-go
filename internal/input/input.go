@@ -2,8 +2,9 @@ package input
 
 import (
 	"spritely/internal/clipboard"
-	"spritely/internal/shared/message"
-	"spritely/internal/shared/topic"
+	"spritely/internal/message"
+	"spritely/internal/tool"
+	"spritely/internal/topic"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
 
@@ -47,6 +48,22 @@ func (i Controller) Update() {
 		})
 		return
 	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+		i.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_TOOL,
+			Payload: tool.Fill,
+		})
+		return
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		i.broker.Publish(message.Message{
+			Topic:   topic.SET_CURRENT_TOOL,
+			Payload: tool.Pencil,
+		})
+		return
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyS) {
 		i.broker.Publish(message.Message{
 			Topic: topic.SAVE,
