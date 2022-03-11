@@ -1,0 +1,14 @@
+label: toolbar
+mailbox:
+  publish:
+    - LEFT_CLICKS
+  subscribe:
+    - SET_CURRENT_TOOL
+    - LEFT_CLICK
+offset:
+  x: 0
+  y: 160
+element-size: 16
+behaviors:
+  - selectable
+  - clickable

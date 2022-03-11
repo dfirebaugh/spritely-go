@@ -1,0 +1,14 @@
+label: palette
+img: palette
+mailbox:
+  publish:
+    - LEFT_CLICKS
+  subscribe:
+    - SET_CURRENT_COLOR
+    - LEFT_CLICK
+xoffset: 160
+yoffset: 0
+element-size: 16
+behaviors:
+  - selectable
+  - clickable

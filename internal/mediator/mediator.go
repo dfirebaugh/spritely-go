@@ -6,8 +6,10 @@ import (
 	"spritely/internal/sprite"
 	"spritely/internal/spritesheet"
 	"spritely/internal/toolbar"
+	"spritely/internal/widgets"
 	"spritely/pkg/broker"
 	"spritely/pkg/geom"
+	"spritely/pkg/widget"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -20,6 +22,7 @@ type Mediator struct {
 	spriteSheet     *spritesheet.SpriteSheet
 	inputController *input.Controller
 	canvas          *sprite.Sprite
+	widgets         []*widget.Widget
 }
 
 const (
@@ -52,12 +55,13 @@ var (
 func New() Mediator {
 	b := broker.NewBroker()
 	mediator := Mediator{
-		broker:          b,
-		inputController: input.New(b),
-		colorPicker:     colorpicker.New(b, colorPickerOffset, colorPickerPixelSize),
-		toolBar:         toolbar.New(b, toolbarOffset, toolBarSize),
-		spriteSheet:     spritesheet.New(b, spriteSheetOffset, spriteSheetSize),
-		canvas:          sprite.NewCanvas(b, canvasOffset, canvasSize),
+		broker: b,
+		// inputController: input.New(b),
+		// colorPicker:     colorpicker.New(b, colorPickerOffset, colorPickerPixelSize),
+		// toolBar:         toolbar.New(b, toolbarOffset, toolBarSize),
+		// spriteSheet:     spritesheet.New(b, spriteSheetOffset, spriteSheetSize),
+		// canvas:          sprite.NewCanvas(b, canvasOffset, canvasSize),
+		widgets: widgets.LoadWidgets(),
 	}
 
 	go mediator.broker.Start()
@@ -65,11 +69,14 @@ func New() Mediator {
 	return mediator
 }
 func (m *Mediator) Update() {
-	m.inputController.Update()
+	// m.inputController.Update()
 }
 func (m *Mediator) Render(dst *ebiten.Image) {
-	m.colorPicker.Widget.Render(dst)
-	m.toolBar.Widget.Render(dst)
-	m.spriteSheet.Render(dst)
-	m.canvas.Render(dst)
+	// m.colorPicker.Widget.Render(dst)
+	// m.toolBar.Widget.Render(dst)
+	// m.spriteSheet.Render(dst)
+	// m.canvas.Render(dst)
+	for _, w := range m.widgets {
+		w.Render(dst)
+	}
 }

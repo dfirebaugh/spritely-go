@@ -1,6 +1,7 @@
 package widget
 
 import (
+	"image"
 	"image/color"
 	"spritely/pkg/geom"
 
@@ -19,14 +20,16 @@ func (e *Element) SetGraphic(graphic interface{}) {
 }
 
 func (e Element) Render(dst *ebiten.Image, x int, y int) {
-	if image, ok := e.Graphic.(*ebiten.Image); ok {
+	if img, ok := e.Graphic.(*ebiten.Image); ok {
 		op := &ebiten.DrawImageOptions{}
 
 		op.GeoM.Translate(
 			e.Offset.X+float64(e.Size.Width/4),
 			e.Offset.Y+float64(e.Size.Height/4),
 		)
-		dst.DrawImage(image, op)
+		dst.DrawImage(img, op)
+
+		dst.DrawImage(img.SubImage(image.Rect(0, 0, 10, 10)).(*ebiten.Image), op)
 	}
 
 	if pixel, ok := e.Graphic.(color.Color); ok {

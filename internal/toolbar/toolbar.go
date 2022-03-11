@@ -2,7 +2,6 @@ package toolbar
 
 import (
 	_ "image/png"
-	"log"
 	"spritely/internal/message"
 	"spritely/internal/tool"
 	"spritely/internal/topic"
@@ -12,7 +11,6 @@ import (
 	"time"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var penImg *ebiten.Image
@@ -25,39 +23,39 @@ var saveImg *ebiten.Image
 var infoImg *ebiten.Image
 
 func init() {
-	var err error
-	penImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Pen.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fillImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Fill.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	dragImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Drag.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	undoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Undo.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	redoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Redo.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	loadImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Load.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	saveImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Save.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	infoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Info.png")
-	if err != nil {
-		log.Fatal(err)
-	}
+	// var err error
+	// penImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Pen.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fillImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Fill.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// dragImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Drag.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// undoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Undo.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// redoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Redo.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// loadImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Load.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// saveImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Save.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// infoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Info.png")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 }
 
 type ToolBar struct {

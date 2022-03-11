@@ -17,6 +17,12 @@ type Widget struct {
 	selectable  bool
 }
 
+func NewSelectableImage(img *ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
+	widget := NewWithImage(img, elementSize, offset)
+	widget.selectable = true
+	return widget
+}
+
 func NewSelectableColors(colors [][]color.Color, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := NewWithColorElements(colors, elementSize, offset)
 	widget.selectable = true
@@ -26,6 +32,14 @@ func NewSelectableImages(images [][]*ebiten.Image, elementSize geom.Size, offset
 	widget := NewWithImageElements(images, elementSize, offset)
 	widget.selectable = true
 	return widget
+}
+func NewWithImage(images *ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
+	widget := Widget{
+		elementSize: elementSize,
+		selectable:  false,
+	}
+	widget.SetOffset(offset)
+	return &widget
 }
 func NewWithImageElements(images [][]*ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := Widget{
@@ -74,6 +88,21 @@ func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize geom.Size) {
 	}
 	w.Elements = elements
 }
+
+// func (w *Widget) initImage(graphics *ebiten.Image, elementSize geom.Size) {
+// 	var elements [][]*Element
+// 	for _, v := range graphics {
+// 		var elementRow []*Element
+// 		for _, graphic := range v {
+// 			elementRow = append(elementRow, &Element{
+// 				Size:    elementSize,
+// 				Graphic: graphic,
+// 			})
+// 		}
+// 		elements = append(elements, elementRow)
+// 	}
+// 	w.Elements = elements
+// }
 
 func (w *Widget) Update() {
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
