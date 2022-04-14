@@ -1,0 +1,16 @@
+colorpicker: # should  we just use the filename?
+    offset:
+        x: 0
+        y: 0
+# canvas:
+#     offset:
+#         x: 0
+#         y: 1
+# toolbar:
+#     offset:
+#         x: 0
+#         y: 1
+# spritesheet:
+#     offset:
+#         x: 0
+#         y: 1

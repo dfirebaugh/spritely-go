@@ -20,6 +20,10 @@ func (e *Element) SetGraphic(graphic interface{}) {
 }
 
 func (e Element) Render(dst *ebiten.Image, x int, y int) {
+	if e.Graphic == nil {
+		return
+	}
+
 	if img, ok := e.Graphic.(*ebiten.Image); ok {
 		op := &ebiten.DrawImageOptions{}
 

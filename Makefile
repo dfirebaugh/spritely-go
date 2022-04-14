@@ -29,4 +29,3 @@ web:
 
 clean:
 	rm -rf .dist/
- 

@@ -1,13 +1,11 @@
-// game is some stuff to make ebiten happy
-//   (e.g. the Draw and  Update functions)
-package game
+package main
 
 import (
 	"image/color"
 	"log"
 	"spritely/internal/mediator"
 
-	ebiten "github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Game struct {
@@ -16,14 +14,10 @@ type Game struct {
 	mediator mediator.Mediator
 }
 
-func New(screenWidth int, screenHeight int) *Game {
-	game := &Game{
-		Width:    screenWidth,
-		Height:   screenHeight,
-		mediator: mediator.New(),
-	}
-	return game
-}
+const (
+	ScreenWidth  = 1024
+	ScreenHeight = 1024
+)
 
 func (g *Game) Update() error {
 	g.mediator.Update()
@@ -46,4 +40,16 @@ func (g *Game) Run() {
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func main() {
+	println("running spritely...")
+
+	game := &Game{
+		Width:    ScreenWidth,
+		Height:   ScreenHeight,
+		mediator: mediator.New(),
+	}
+
+	game.Run()
 }
