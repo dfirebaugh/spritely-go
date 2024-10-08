@@ -9,6 +9,7 @@ const (
 	SET_CURRENT_SPRITE
 	GET_SELECTED_SPRITE
 	UPDATE_CANVAS
+	PRINT_CANVAS
 	GET_PIXELS
 	SET_ELEMENT
 	SET_PIXEL
@@ -22,6 +23,7 @@ const (
 	PASTE
 	UNDO
 	REDO
+	LEFT_CLICK_JUST_PRESSED
 	LEFT_CLICK
 	RIGHT_CLICK
 	PUSH_TO_CLIPBOARD
@@ -45,6 +47,8 @@ func (t Topic) String() string {
 		return "GET_SELECTED_SPRITE"
 	case UPDATE_CANVAS:
 		return "UPDATE_CANVAS"
+	case PRINT_CANVAS:
+		return "PRINT_CANVAS"
 	case GET_PIXELS:
 		return "GET_PIXELS"
 	case SET_ELEMENT:
@@ -71,6 +75,8 @@ func (t Topic) String() string {
 		return "UNDO"
 	case REDO:
 		return "REDO"
+	case LEFT_CLICK_JUST_PRESSED:
+		return "LEFT_CLICK_JUST_PRESSED"
 	case LEFT_CLICK:
 		return "LEFT_CLICK"
 	case RIGHT_CLICK:

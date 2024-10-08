@@ -4,7 +4,8 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"spritely/internal/topic"
+
+	"github.com/dfirebaugh/spritely-go/internal/topic"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -18,9 +19,11 @@ type Message struct {
 func (m Message) GetTopic() string {
 	return m.Topic.String()
 }
+
 func (m Message) GetRequestor() string {
 	return m.Requestor
 }
+
 func (m Message) GetPayload() interface{} {
 	if m.Payload == nil {
 		log.Error("message was malformed")

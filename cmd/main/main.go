@@ -2,7 +2,8 @@ package main
 
 import (
 	_ "image/png"
-	"spritely/internal/game"
+
+	"github.com/dfirebaugh/spritely-go/internal/game"
 )
 
 const (

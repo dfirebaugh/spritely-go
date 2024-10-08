@@ -3,8 +3,9 @@ package widget
 import (
 	"fmt"
 	"image/color"
-	"spritely/pkg/draw"
-	"spritely/pkg/geom"
+
+	"github.com/dfirebaugh/spritely-go/pkg/draw"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -22,11 +23,13 @@ func NewSelectableColors(colors [][]color.Color, elementSize geom.Size, offset g
 	widget.selectable = true
 	return widget
 }
+
 func NewSelectableImages(images [][]*ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := NewWithImageElements(images, elementSize, offset)
 	widget.selectable = true
 	return widget
 }
+
 func NewWithImageElements(images [][]*ebiten.Image, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := Widget{
 		elementSize: elementSize,
@@ -36,6 +39,7 @@ func NewWithImageElements(images [][]*ebiten.Image, elementSize geom.Size, offse
 	widget.SetOffset(offset)
 	return &widget
 }
+
 func NewWithColorElements(colors [][]color.Color, elementSize geom.Size, offset geom.Offset) *Widget {
 	widget := Widget{
 		elementSize: elementSize,
@@ -60,6 +64,7 @@ func (w *Widget) initColors(graphics [][]color.Color, elementSize geom.Size) {
 	}
 	w.Elements = elements
 }
+
 func (w *Widget) initImages(graphics [][]*ebiten.Image, elementSize geom.Size) {
 	var elements [][]*Element
 	for _, v := range graphics {

@@ -5,13 +5,14 @@ import (
 	"image/color"
 	"image/png"
 	"os"
-	"spritely/internal/palette"
-	"spritely/internal/sprite"
-	"spritely/pkg/broker"
-	"spritely/pkg/geom"
-	"spritely/pkg/widget"
 	"strconv"
 	"strings"
+
+	"github.com/dfirebaugh/spritely-go/internal/palette"
+	"github.com/dfirebaugh/spritely-go/internal/sprite"
+	"github.com/dfirebaugh/spritely-go/pkg/broker"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -31,12 +32,12 @@ func Save(dst *ebiten.Image, sprites [][]*sprite.Sprite, offset geom.Offset) {
 	os.WriteFile(
 		"spritely.spt",
 		[]byte(fmt.Sprintf("#spritely-sprite\n==\n%s\n", Encode(sprites))),
-		0644,
+		0o644,
 	)
 	os.WriteFile(
 		"spritely.plt",
 		[]byte(fmt.Sprintf("#spritely-palette\n==\n%s\n", encodePalette(palette.DefaultColors))),
-		0644,
+		0o644,
 	)
 
 	// Encode to `PNG` with `DefaultCompression` level
@@ -64,8 +65,9 @@ func copyToImage(dst *ebiten.Image, sprites [][]*sprite.Sprite, offset geom.Offs
 }
 
 // Encode the sprite sheet into a hex representation
-//  given that we have a defined palette of (16) colors
-//  we can represent a sprite by a set of hex digits
+//
+//	given that we have a defined palette of (16) colors
+//	we can represent a sprite by a set of hex digits
 func Encode(sprites [][]*sprite.Sprite) string {
 	var result string
 	r1 := make(map[int]string, 32)

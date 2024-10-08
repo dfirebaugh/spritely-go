@@ -2,8 +2,9 @@ package colorpicker
 
 import (
 	"image/color"
-	"spritely/internal/topic"
-	"spritely/pkg/geom"
+
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 )
 
 func (c *ColorPicker) mailbox() {

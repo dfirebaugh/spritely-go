@@ -1,11 +1,13 @@
 // game is some stuff to make ebiten happy
-//   (e.g. the Draw and  Update functions)
+//
+//	(e.g. the Draw and  Update functions)
 package game
 
 import (
 	"image/color"
 	"log"
-	"spritely/internal/mediator"
+
+	"github.com/dfirebaugh/spritely-go/internal/mediator"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
 )
@@ -33,7 +35,6 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.NRGBA{0x00, 0x40, 0x80, 0xff})
 	g.mediator.Render(screen)
-
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

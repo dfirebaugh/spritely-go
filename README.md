@@ -6,7 +6,7 @@ Why? Go is pretty sweet.
 
 
 ## Demo
-[in browser demo](https://dfirebaugh.github.io/spritely/)
+[in browser demo](https://dfirebaugh.github.io/spritely-go/)
 
 ## running the app
 [download go](https://go.dev/dl/)

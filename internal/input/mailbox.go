@@ -1,8 +1,8 @@
 package input
 
 import (
-	"spritely/internal/topic"
-	"spritely/pkg/widget"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 )
 
 func (i *Controller) mailbox() {

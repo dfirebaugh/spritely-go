@@ -1,13 +1,13 @@
 package mediator
 
 import (
-	"spritely/internal/colorpicker"
-	"spritely/internal/input"
-	"spritely/internal/sprite"
-	"spritely/internal/spritesheet"
-	"spritely/internal/toolbar"
-	"spritely/pkg/broker"
-	"spritely/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/internal/colorpicker"
+	"github.com/dfirebaugh/spritely-go/internal/input"
+	"github.com/dfirebaugh/spritely-go/internal/sprite"
+	"github.com/dfirebaugh/spritely-go/internal/spritesheet"
+	"github.com/dfirebaugh/spritely-go/internal/toolbar"
+	"github.com/dfirebaugh/spritely-go/pkg/broker"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -64,9 +64,11 @@ func New() Mediator {
 
 	return mediator
 }
+
 func (m *Mediator) Update() {
 	m.inputController.Update()
 }
+
 func (m *Mediator) Render(dst *ebiten.Image) {
 	m.colorPicker.Widget.Render(dst)
 	m.toolBar.Widget.Render(dst)

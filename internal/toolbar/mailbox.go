@@ -1,9 +1,9 @@
 package toolbar
 
 import (
-	"spritely/internal/tool"
-	"spritely/internal/topic"
-	"spritely/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/internal/tool"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 )
 
 func (tb *ToolBar) mailbox() {

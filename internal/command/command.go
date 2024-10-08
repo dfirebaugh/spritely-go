@@ -1,12 +1,14 @@
 package command
 
-import "spritely/pkg/actor"
+import "github.com/dfirebaugh/spritely-go/pkg/actor"
 
-type Command struct{}
-type CommandStack struct {
-	actorSystem *actor.ActorSystem
-	commands    []Command
-}
+type (
+	Command      struct{}
+	CommandStack struct {
+		actorSystem *actor.ActorSystem
+		commands    []Command
+	}
+)
 
 func New(actorSystem *actor.ActorSystem) CommandStack {
 	return CommandStack{actorSystem: actorSystem}

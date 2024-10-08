@@ -2,7 +2,8 @@ package widget
 
 import (
 	"image/color"
-	"spritely/pkg/geom"
+
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"

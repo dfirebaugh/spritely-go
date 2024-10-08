@@ -1,12 +1,18 @@
 package spritesheet
 
 import (
+	"fmt"
 	"image/color"
-	"spritely/internal/message"
-	"spritely/internal/topic"
-	"spritely/pkg/geom"
-	"spritely/pkg/widget"
+	"strings"
+	"time"
+
+	"github.com/dfirebaugh/spritely-go/internal/message"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 )
+
+var isLeftJustPressed = false
 
 func (ss *SpriteSheet) mailbox() {
 	msg := ss.broker.Subscribe()
@@ -47,10 +53,57 @@ func (ss *SpriteSheet) mailbox() {
 				X: ss.selected.X,
 				Y: ss.selected.Y + 1,
 			})
+		case topic.LEFT_CLICK_JUST_PRESSED.String():
+			isLeftJustPressed = true
+			go func() {
+				time.Sleep(200 * time.Millisecond)
+				isLeftJustPressed = false
+			}()
+
 		case topic.SAVE.String():
-			// ss.Encode()
-			ss.save()
+			if !isLeftJustPressed {
+				continue
+			}
+
+			println("Selected Sprite Encoding:")
+			selectedEncoded := ss.sprites[ss.selected.Y][ss.selected.X].Encode()
+			var selectedOutput string
+			for _, line := range splitLines(selectedEncoded) {
+				selectedOutput += fmt.Sprintf("\"%s\"\n", line)
+			}
+			fmt.Println(selectedOutput)
+
+			var fullSpriteSheet string
+			spriteHeight := len(ss.sprites[0][0].Widget.Elements)
+			for y := 0; y < 4; y++ {
+				for i := 0; i < spriteHeight; i++ {
+					var line string
+					for x := 0; x < 8; x++ {
+						encodedSprite := splitLines(ss.sprites[y][x].Encode())
+						line += encodedSprite[i]
+					}
+					fullSpriteSheet += fmt.Sprintf("\"%s\"\n", line)
+				}
+				fullSpriteSheet += "\n"
+			}
+
+			fmt.Println("Entire Sprite Sheet Encoding in 8x4 grid (with quotes):")
+			fmt.Println(fullSpriteSheet)
+
+			isLeftJustPressed = false
 
 		}
 	}
+}
+
+func splitLines(encoded string) []string {
+	return strings.Split(strings.TrimSpace(encoded), "\n")
+}
+
+func formatEncodedSprite(encoded string) string {
+	var output string
+	for _, line := range splitLines(encoded) {
+		output += fmt.Sprintf("\"%s\"\n", line)
+	}
+	return output
 }

@@ -1,7 +1,7 @@
 package clipboard
 
 import (
-	"spritely/pkg/widget"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 )
 
 type Controller struct {

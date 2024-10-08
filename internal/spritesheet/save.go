@@ -1,7 +1,7 @@
 package spritesheet
 
 import (
-	"spritely/internal/file"
+	"github.com/dfirebaugh/spritely-go/internal/file"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

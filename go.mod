@@ -1,4 +1,4 @@
-module spritely
+module github.com/dfirebaugh/spritely-go
 
 go 1.17
 

@@ -3,26 +3,29 @@ package toolbar
 import (
 	_ "image/png"
 	"log"
-	"spritely/internal/message"
-	"spritely/internal/tool"
-	"spritely/internal/topic"
-	"spritely/pkg/broker"
-	"spritely/pkg/geom"
-	"spritely/pkg/widget"
 	"time"
+
+	"github.com/dfirebaugh/spritely-go/internal/message"
+	"github.com/dfirebaugh/spritely-go/internal/tool"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/broker"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 
 	ebiten "github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var penImg *ebiten.Image
-var fillImg *ebiten.Image
-var dragImg *ebiten.Image
-var undoImg *ebiten.Image
-var redoImg *ebiten.Image
-var loadImg *ebiten.Image
-var saveImg *ebiten.Image
-var infoImg *ebiten.Image
+var (
+	penImg  *ebiten.Image
+	fillImg *ebiten.Image
+	dragImg *ebiten.Image
+	undoImg *ebiten.Image
+	redoImg *ebiten.Image
+	loadImg *ebiten.Image
+	saveImg *ebiten.Image
+	infoImg *ebiten.Image
+)
 
 func init() {
 	var err error
@@ -130,6 +133,9 @@ func (tb *ToolBar) pick(t tool.Tool) {
 	case tool.Open:
 		go tb.delaySwitch()
 	case tool.Save:
+		tb.broker.Publish(message.Message{
+			Topic: topic.SAVE,
+		})
 		go tb.delaySwitch()
 	case tool.Info:
 		go tb.delaySwitch()

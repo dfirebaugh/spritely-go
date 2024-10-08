@@ -2,10 +2,11 @@ package sprite
 
 import (
 	"image/color"
-	"spritely/internal/tool"
-	"spritely/internal/topic"
-	"spritely/pkg/geom"
-	"spritely/pkg/widget"
+
+	"github.com/dfirebaugh/spritely-go/internal/tool"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 )
 
 func (s *Sprite) mailbox() {

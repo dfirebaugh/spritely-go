@@ -2,12 +2,13 @@ package colorpicker
 
 import (
 	"image/color"
-	"spritely/internal/message"
-	"spritely/internal/palette"
-	"spritely/internal/topic"
-	"spritely/pkg/broker"
-	"spritely/pkg/geom"
-	"spritely/pkg/widget"
+
+	"github.com/dfirebaugh/spritely-go/internal/message"
+	"github.com/dfirebaugh/spritely-go/internal/palette"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/broker"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/pkg/widget"
 )
 
 type ColorPicker struct {

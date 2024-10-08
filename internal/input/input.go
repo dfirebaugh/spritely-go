@@ -1,12 +1,12 @@
 package input
 
 import (
-	"spritely/internal/clipboard"
-	"spritely/internal/message"
-	"spritely/internal/tool"
-	"spritely/internal/topic"
-	"spritely/pkg/broker"
-	"spritely/pkg/geom"
+	"github.com/dfirebaugh/spritely-go/internal/clipboard"
+	"github.com/dfirebaugh/spritely-go/internal/message"
+	"github.com/dfirebaugh/spritely-go/internal/tool"
+	"github.com/dfirebaugh/spritely-go/internal/topic"
+	"github.com/dfirebaugh/spritely-go/pkg/broker"
+	"github.com/dfirebaugh/spritely-go/pkg/geom"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -24,6 +24,18 @@ func New(b *broker.Broker) *Controller {
 }
 
 func (i Controller) Update() {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
+		coordinate := geom.Coordinate{
+			X: x,
+			Y: y,
+		}
+		i.broker.Publish(message.Message{
+			Topic:   topic.LEFT_CLICK_JUST_PRESSED,
+			Payload: coordinate,
+		})
+		return
+	}
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 		coordinate := geom.Coordinate{
