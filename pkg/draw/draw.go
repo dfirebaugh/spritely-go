@@ -4,45 +4,17 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 func DrawBox(dst *ebiten.Image, x, y, width, height float64, clr color.Color) {
 	var stroke float64 = 1
 	// top
-	ebitenutil.DrawLine(
-		dst,
-		x,
-		y,
-		x+width,
-		y,
-		clr,
-	)
+	vector.StrokeLine(dst, float32(x), float32(y), float32(x+width), float32(y), float32(stroke), clr, false)
 	// bottom
-	ebitenutil.DrawLine(
-		dst,
-		x,
-		y+height-stroke,
-		x+width,
-		y+height-stroke,
-		clr,
-	)
+	vector.StrokeLine(dst, float32(x), float32(y+height-stroke+1), float32(x+width), float32(y+height-stroke), float32(stroke), clr, false)
 	// left
-	ebitenutil.DrawLine(
-		dst,
-		x+stroke,
-		y,
-		x+stroke,
-		y+height,
-		clr,
-	)
+	vector.StrokeLine(dst, float32(x+stroke), float32(y), float32(x+stroke), float32(y+height), float32(stroke), clr, false)
 	// right
-	ebitenutil.DrawLine(
-		dst,
-		x+width,
-		y,
-		x+width,
-		y+height,
-		clr,
-	)
+	vector.StrokeLine(dst, float32(x+width), float32(y), float32(x+width), float32(y+height), float32(stroke), clr, false)
 }
