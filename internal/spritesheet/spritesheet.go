@@ -1,9 +1,14 @@
 package spritesheet
 
 import (
+	"bufio"
+	"fmt"
 	"image/color"
+	"os"
+	"strings"
 
 	"github.com/dfirebaugh/spritely-go/internal/message"
+	"github.com/dfirebaugh/spritely-go/internal/palette"
 	"github.com/dfirebaugh/spritely-go/internal/sprite"
 	"github.com/dfirebaugh/spritely-go/internal/topic"
 	"github.com/dfirebaugh/spritely-go/pkg/broker"
@@ -56,8 +61,46 @@ func New(broker *broker.Broker, spriteSheetOffset geom.Offset, spriteSize geom.S
 		Height: 8 * ss.pixelSize,
 	}, spriteSheetOffset)
 
+	// Try to load from an existing sprite_sheet file
+	if _, err := os.Stat("./sprite_sheet"); err == nil {
+		fmt.Println("Loading sprite sheet from file...")
+		err = ss.loadSpriteSheetFromFile("./sprite_sheet")
+		if err != nil {
+			fmt.Println("Error loading sprite sheet:", err)
+		} else {
+			fmt.Println("Sprite sheet loaded successfully.")
+		}
+	}
+
 	go ss.mailbox()
 	return &ss
+}
+
+func (ss *SpriteSheet) loadSpriteSheetFromFile(filepath string) error {
+	file, err := os.Open(filepath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	y := 0
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue // Skip empty lines
+		}
+		for x, char := range line {
+			colorIdx := charToIndex(char)
+			ss.sprites[y/ss.spriteRowSize][x/ss.spriteRowSize].Widget.Elements[y%ss.spriteRowSize][x%ss.spriteRowSize].SetGraphic(palette.DefaultColors[colorIdx])
+		}
+		y++
+	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (ss SpriteSheet) Render(dst *ebiten.Image) {

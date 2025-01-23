@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/dfirebaugh/spritely-go/assets"
 	"github.com/dfirebaugh/spritely-go/internal/message"
 	"github.com/dfirebaugh/spritely-go/internal/tool"
 	"github.com/dfirebaugh/spritely-go/internal/topic"
@@ -29,35 +30,35 @@ var (
 
 func init() {
 	var err error
-	penImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Pen.png")
+	penImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Pen.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fillImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Fill.png")
+	fillImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Fill.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	dragImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Drag.png")
+	dragImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Drag.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	undoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Undo.png")
+	undoImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Undo.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	redoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Redo.png")
+	redoImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Redo.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	loadImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Load.png")
+	loadImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Load.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	saveImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Save.png")
+	saveImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Save.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	infoImg, _, err = ebitenutil.NewImageFromFile("./assets/icons/Info.png")
+	infoImg, _, err = ebitenutil.NewImageFromFileSystem(assets.AssetFS, "icons/Info.png")
 	if err != nil {
 		log.Fatal(err)
 	}
